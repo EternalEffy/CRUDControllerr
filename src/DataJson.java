@@ -1,5 +1,4 @@
 import org.json.JSONObject;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -12,8 +11,14 @@ public class DataJson {
         private JSONObject json;
         private String fileName, listName;
 
-        public DataJson() {
-            listName = "WorkersData";
+
+
+        public DataJson(String listName) {
+            this.listName = listName ;
+        }
+
+        public String getListName() {
+            return listName;
         }
 
         public int loadJSON(String fileName) {
@@ -23,11 +28,10 @@ public class DataJson {
             } catch (FileNotFoundException e) {
                 try {
                     Files.writeString((Files.createFile(Path.of(fileName))),"{\"" + listName + "\":[]}");
+                    json = new JSONObject(new String(new FileInputStream(fileName).readAllBytes()));
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }
-                json = new JSONObject("{\"" + listName + "\":[]}");
-                System.out.println(json.toString());
                 return -1;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -36,14 +40,10 @@ public class DataJson {
             return 0;
         }
 
-        public void addWorker(Worker worker){
-            json.getJSONArray(listName).put(getListSize(),new JSONObject(worker.toString()));
-        }
 
-        public int saveJSON(String fileName) {
+        public int saveJSON(JSONObject json,String fileName) {
             try {
-                FileOutputStream fout = new FileOutputStream(fileName);
-                fout.write(json.toString().getBytes());
+                new FileOutputStream(fileName).write(json.toString().getBytes());
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 return -1;
@@ -53,7 +53,9 @@ public class DataJson {
             }
             return 0;
         }
-        public int getListSize(){
-        return json.getJSONArray(listName).length();
-    }
+
+        public JSONObject getJson(){
+            return json;
+        }
+
 }

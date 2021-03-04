@@ -1,24 +1,31 @@
 import org.json.JSONObject;
 
 public class EFFY_CRUD {
+    private JSONObject json;
 
-    private DataJson myData = new DataJson();
-
-    public void create(){
-        myData.loadJSON("test.json");
-        myData.addWorker(new Worker("Михаил","Иванов","MihLog","kjsdhfkj2","1","0,2","офис-менеджер"));
-        myData.saveJSON("test.json");
+    public EFFY_CRUD(JSONObject json){
+        this.json = json;
     }
 
-    public void read(){
-
+    public JSONObject getJson() {
+        return json;
     }
 
-    public void update(){
-
+    public void create(Worker worker, String listName){
+        json.getJSONArray(listName).put(json.getJSONArray(listName).length(),new JSONObject(worker.toString()));
     }
 
-    public void delete(){
+    public String read(final int index,String listName){
+        if(index>json.getJSONArray(listName).length()-1) return null;
+        return json.getJSONArray(listName).getJSONObject(index).toString();
+    }
 
+    public void update(final int index, String listName, Worker worker){
+        json.getJSONArray(listName).put(index,new JSONObject(worker.toString()));
+    }
+
+    public void delete(final int index,String listName){
+        if(index>json.getJSONArray(listName).length()) return;
+        json.getJSONArray(listName).remove(index);
     }
 }
